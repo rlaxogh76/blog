@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+  /* background-image: url("https://www.w3schools.com/css/img_mountains.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover; */
+}
+
+.top {
+  height: 30px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid gray;
+}
+
+button {
+  background: none;
+  border: none;
+}
+
+.content {
+  font-size: 30px;
+  height: 1000px;
+  background-color: lightGray;
+  text-align: center;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: white;
+}
