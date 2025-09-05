@@ -1,15 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Rubik+Scribble&family=Zilla+Slab+Highlight:wght@400;700&display=swap");
 
 .custom-header {
-  background-color: transparent;
+  position: sticky;
+  top: 0;
+  background: rgba(251, 240, 240, 0.15); /* 투명 유리 느낌 */
   color: #fff;
-  padding: 4px 8px;
+  padding: 16px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  backdrop-filter: blur(5px) saturate(40%);
-  background-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
 }
 
 .logo {
