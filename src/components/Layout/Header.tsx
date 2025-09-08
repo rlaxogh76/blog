@@ -1,26 +1,26 @@
 import React from "react";
 import "../../styles/Header.css";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   return (
     <header className="custom-header">
-      <div className="logo text">rlaxogh76</div>
       <nav>
         <ul className="nav-list">
           <li>
-            <a href="#" className="nav-link text tooltip">
+            <Link to="/" className="nav-link text tooltip">
               홈
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="nav-link text">
+            <Link to="/blog" className="nav-link text">
               블로그
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="nav-link text">
+            <Link to="/project" className="nav-link text">
               프로젝트
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
