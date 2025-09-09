@@ -29,6 +29,11 @@ const Header: React.FC = () => {
             </Link>
           </li>
           <li>
+            <Link to="/portfolio" className="nav-link text tooltip">
+              소개
+            </Link>
+          </li>
+          <li>
             <Link to="/blog" className="nav-link text">
               블로그
             </Link>
