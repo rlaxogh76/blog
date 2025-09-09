@@ -1,0 +1,58 @@
+.custom-header {
+  position: sticky;
+  top: 0;
+  padding: 10px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #fff;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+/* 스크롤 시 헤더 스타일 변경 */
+.custom-header.scrolled {
+  /* From https://css.glass */
+  background: rgb(26, 25, 25);
+  /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(13.2px);
+  -webkit-backdrop-filter: blur(13.2px); */
+}
+
+/* 가운데 로고 텍스트 */
+.logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: "Rubik Scribble", sans-serif;
+  transition: opacity 0.3s ease;
+}
+
+.custom-header.scrolled .logo {
+  opacity: 0;
+}
+
+.nav-list {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition:
+    color 0.2s,
+    text-decoration 0.2s;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  color: #66dbfb;
+}

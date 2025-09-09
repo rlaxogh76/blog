@@ -1,10 +1,26 @@
-import React from "react";
-import "../../styles/Header.css";
+import React, { useState, useEffect } from "react";
+import "../../styles/Layout/Header.css";
 import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <header className="custom-header">
+    <header className={`custom-header ${isScrolled ? "scrolled" : ""}`}>
+      {/* // <header className="custom-header"> */}
+      {/* {!isScrolled && <div className="logo">rlaxogh76</div>} */}
       <nav>
         <ul className="nav-list">
           <li>
