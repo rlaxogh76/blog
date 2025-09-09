@@ -49,6 +49,36 @@ body {
   margin: 20px auto;
 }
 
+.main-text {
+  color: white;
+  text-align: center;
+  font-size: 50px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.section-1 {
+  left: -15%;
+}
+
+.section-box-1 {
+  width: 1200px;
+  height: 500px;
+  border-radius: 20px;
+  background-color: var(--color);
+  margin: 20px auto;
+}
+.Github-img {
+  width: 15%;
+  height: 15%;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: block;
+  position: relative;
+  left: -10%;
+}
+
 line .top {
   height: 30px;
   padding: 10px;

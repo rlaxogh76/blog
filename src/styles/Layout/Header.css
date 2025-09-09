@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: flex-end;
   color: #fff;
+  /* background: #2f2f2f; */
   background-color: transparent;
   transition: all 0.3s ease;
   z-index: 1000;
@@ -14,7 +15,7 @@
 /* 스크롤 시 헤더 스타일 변경 */
 .custom-header.scrolled {
   /* From https://css.glass */
-  background: rgb(26, 25, 25);
+  background: #2f2f2f;
   /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(13.2px);
   -webkit-backdrop-filter: blur(13.2px); */
