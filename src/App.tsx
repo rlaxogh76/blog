@@ -4,6 +4,7 @@ import Header from "./components/Layout/Header";
 import { Routes, Route } from "react-router-dom";
 import Blog from "./pages/Blog/Blog";
 import Project from "./pages/Project/Project";
+import Footer from "./components/Layout/Footer";
 
 function App() {
   return (
@@ -25,6 +26,23 @@ function App() {
                 className="box"
                 style={{ "--color": "cyan" } as React.CSSProperties}
               ></div>
+              <div
+                className="box"
+                style={{ "--color": "orange" } as React.CSSProperties}
+              ></div>
+              <div
+                className="box"
+                style={{ "--color": "cyan" } as React.CSSProperties}
+              ></div>
+              <div
+                className="box"
+                style={{ "--color": "orange" } as React.CSSProperties}
+              ></div>
+              <div
+                className="box"
+                style={{ "--color": "cyan" } as React.CSSProperties}
+              ></div>
+              <Footer />
             </div>
           }
         />
