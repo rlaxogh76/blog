@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Segoe UI Black Italic";
+  font-weight: normal;
+  src: url("./assets/fonts/Segoe-UI-Black-Italic.ttf") format("truetype");
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -10,26 +16,49 @@ body {
   background-color: #222222;
 }
 
+.title {
+  height: 500px;
+  position: relative;
+  z-index: 2;
+}
 .hero-text {
   color: white;
   text-align: center;
   font-size: 50px;
   margin-top: 15%;
+  position: relative;
+  z-index: 2;
+}
+
+.line {
+  width: 530px;
+  height: 10px;
+  background-color: rgb(255, 161, 72);
+  margin: 39px auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .box {
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   background-color: var(--color);
   margin: 20px auto;
 }
 
-.top {
+line .top {
   height: 30px;
   padding: 10px;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid gray;
+}
+
+h1 {
+  font-family: "Segoe UI Black Italic", sans-serif;
 }
 
 button {

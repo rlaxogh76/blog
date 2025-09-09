@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Blog from "./pages/Blog/Blog";
 import Project from "./pages/Project/Project";
 import Footer from "./components/Layout/Footer";
+import Portfolio from "./pages/portfolio/Portfolio";
 
 function App() {
   return (
@@ -14,32 +15,40 @@ function App() {
         <Route
           path="/"
           element={
-            <div>
-              <div className="hero-text">
-                <h1>Hello world</h1>
+            <div className="scroll-container">
+              <div className="scroll-area hero-text title">
+                <h1 className="title">
+                  rlaxogh
+                  <span style={{ color: "#4979ff" }}>76</span>
+                </h1>
               </div>
+              <div className="line"></div>
               <div
-                className="box"
+                className="box scroll-area"
                 style={{ "--color": "orange" } as React.CSSProperties}
               ></div>
               <div
-                className="box"
+                className="box scroll-area"
                 style={{ "--color": "cyan" } as React.CSSProperties}
               ></div>
               <div
-                className="box"
+                className="box scroll-area"
                 style={{ "--color": "orange" } as React.CSSProperties}
               ></div>
               <div
-                className="box"
+                className="box scroll-area"
                 style={{ "--color": "cyan" } as React.CSSProperties}
               ></div>
               <div
-                className="box"
+                className="box scroll-area"
                 style={{ "--color": "orange" } as React.CSSProperties}
               ></div>
               <div
-                className="box"
+                className="box scroll-area"
+                style={{ "--color": "orange" } as React.CSSProperties}
+              ></div>
+              <div
+                className="box scroll-area"
                 style={{ "--color": "cyan" } as React.CSSProperties}
               ></div>
               <Footer />
@@ -48,6 +57,7 @@ function App() {
         />
         <Route path="/blog" element={<Blog />} />
         <Route path="/Project" element={<Project />} />
+        <Route path="/portfolio" element={<Portfolio />} />
       </Routes>
     </>
   );
