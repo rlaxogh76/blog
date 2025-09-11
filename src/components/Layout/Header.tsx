@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/Layout/Header.css";
 import { Link } from "react-router-dom";
+import darkModeIcon from "../../assets/dark-mode.svg";
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,6 +43,13 @@ const Header: React.FC = () => {
             <Link to="/project" className="nav-link text">
               프로젝트
             </Link>
+          </li>
+          <li>
+            <img
+              src={darkModeIcon}
+              className="dark-mode-icon"
+              alt="dark-mode"
+            />
           </li>
         </ul>
       </nav>

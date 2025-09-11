@@ -32,6 +32,13 @@
   transition: opacity 0.3s ease;
 }
 
+.dark-mode-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
 .custom-header.scrolled .logo {
   opacity: 0;
 }
