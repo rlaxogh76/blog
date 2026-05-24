@@ -2,17 +2,17 @@
 
 @layer base {
   :root {
-    --bg-base: #1F1F1E;
-    --bg-surface: #272726;
-    --bg-card: #2E2E2C;
-    --bg-hover: #353533;
-    --accent: #C8A96E;
-    --accent-dim: #9A7A45;
-    --text-primary: #E8E5DF;
-    --text-secondary: #9A9690;
-    --text-muted: #5E5C58;
-    --border: #383836;
-    --border-light: #2C2C2A;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-hover: #e2e2e2;
+    --bg-header: rgba(245, 243, 238, 0.92);
+    --accent: #b8924a;
+    --accent-dim: #8a6a30;
+    --text-primary: #1c1b18;
+    --text-secondary: #5a5652;
+    --text-muted: #9a9690;
+    --border: #d5d1c9;
+    --border-light: #e2ded6;
   }
 
   * {
@@ -21,20 +21,22 @@
     scrollbar-color: var(--border) transparent;
   }
 
-  *::-webkit-scrollbar { width: 4px; }
+  *::-webkit-scrollbar {
+    width: 4px;
+  }
   *::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: 2px;
   }
 
-  html, body, #root {
+  html,
+  body,
+  #root {
     height: 100%;
   }
 
   body {
-    background-color: var(--bg-base);
     color: var(--text-primary);
-    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
     font-size: 15px;
     line-height: 1.7;
     margin: 0;
