@@ -1,36 +1,51 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
 import Articles from "./pages/Articles";
 import Reader from "./pages/Reader";
+
+function Layout() {
+  const { pathname } = useLocation();
+  const isReader = /^\/articles\/.+/.test(pathname);
+
+  return (
+    <div style={{ paddingTop: "3.5rem", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          maxWidth: isReader ? 1600 : 1380,
+          width: "100%",
+          margin: "0 auto",
+          padding: isReader ? "28px 0" : "28px 24px",
+          gap: 20,
+          alignItems: "flex-start",
+        }}
+      >
+        {!isReader && (
+          <div style={{ position: "sticky", top: 76, flexShrink: 0 }}>
+            <Sidebar />
+          </div>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Routes>
+            <Route path="/" element={<Articles />} />
+            <Route path="/articles" element={<Articles />} />
+            <Route path="/articles/:id" element={<Reader />} />
+          </Routes>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
-      <div style={{ paddingTop: "3.5rem", minHeight: "100vh" }}>
-        <div
-          style={{
-            display: "flex",
-            maxWidth: 1380,
-            margin: "0 auto",
-            padding: "28px 24px",
-            gap: 20,
-            alignItems: "flex-start",
-          }}
-        >
-          <div style={{ position: "sticky", top: 76, flexShrink: 0 }}>
-            <Sidebar />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Routes>
-              <Route path="/" element={<Articles />} />
-              <Route path="/articles" element={<Articles />} />
-              <Route path="/articles/:slug" element={<Reader />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
+      <Layout />
     </BrowserRouter>
   );
 }
