@@ -95,9 +95,9 @@ export default function About() {
                   >
                     {articles.map((a) => (
                       <ArticleCard
-                        key={a.id}
+                        key={a.slug}
                         article={a}
-                        onClick={() => navigate(`/articles/${a.slug}`)}
+                        onClick={() => navigate(`/articles/${a.id}`)}
                       />
                     ))}
                   </div>
