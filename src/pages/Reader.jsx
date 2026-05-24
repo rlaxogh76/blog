@@ -1,161 +1,496 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { marked } from 'marked'
-import { ARTICLES } from '../content/articles'
-import { CATEGORIES } from '../content/categories'
-import { toc as tocStyle } from '../styles/components'
-import Tag from '../components/Tag'
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { ARTICLES } from "../content/articles";
+import { CATEGORIES } from "../content/categories";
+import { toc as tocStyle } from "../styles/components";
+import Tag from "../components/Tag";
 
-// marked 설정 — 코드 블록에 언어 클래스 추가
-marked.setOptions({ gfm: true, breaks: false })
+// 커스텀 마크다운 컴포넌트
+const markdownComponents = {
+  code({ node, inline, className, children, ...props }) {
+    const match = /language-(\w+)/.exec(className || "");
+    const language = match ? match[1] : "text";
+
+    if (inline) {
+      return (
+        <code
+          style={{
+            padding: "2px 6px",
+            borderRadius: "4px",
+            background: "var(--bg-hover)",
+            color: "var(--accent)",
+            fontFamily: "'Source Code Pro', monospace",
+            fontSize: "0.9em",
+          }}
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    }
+
+    return (
+      <SyntaxHighlighter
+        language={language}
+        style={oneLight}
+        customStyle={{
+          background: "#EDEDED",
+          border: "1px solid var(--border)",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "16px",
+          fontSize: "13px",
+          lineHeight: "1.5",
+        }}
+        codeTagProps={{ style: { background: "#EDEDED" } }}
+        wrapLongLines
+        {...props}
+      >
+        {String(children).replace(/\n$/, "")}
+      </SyntaxHighlighter>
+    );
+  },
+  pre({ children }) {
+    return <>{children}</>;
+  },
+  h2({ children, node }) {
+    const text = extractText(children);
+    const id = slugify(text);
+    return (
+      <h2
+        id={id}
+        style={{
+          fontSize: "24px",
+          fontWeight: 700,
+          marginTop: "32px",
+          marginBottom: "16px",
+          color: "var(--text-primary)",
+          borderBottom: "1px solid var(--border-light)",
+          paddingBottom: "8px",
+        }}
+      >
+        {children}
+      </h2>
+    );
+  },
+  h3({ children, node }) {
+    const text = extractText(children);
+    const id = slugify(text);
+    return (
+      <h3
+        id={id}
+        style={{
+          fontSize: "18px",
+          fontWeight: 600,
+          marginTop: "24px",
+          marginBottom: "12px",
+          color: "var(--text-primary)",
+        }}
+      >
+        {children}
+      </h3>
+    );
+  },
+  p({ children }) {
+    return (
+      <p
+        style={{
+          marginBottom: "16px",
+          lineHeight: "1.7",
+          color: "var(--text-primary)",
+        }}
+      >
+        {children}
+      </p>
+    );
+  },
+  ul({ children }) {
+    return (
+      <ul
+        style={{
+          marginLeft: "24px",
+          marginBottom: "16px",
+          listStyleType: "disc",
+          color: "var(--text-primary)",
+        }}
+      >
+        {children}
+      </ul>
+    );
+  },
+  ol({ children }) {
+    return (
+      <ol
+        style={{
+          marginLeft: "24px",
+          marginBottom: "16px",
+          listStyleType: "decimal",
+          color: "var(--text-primary)",
+        }}
+      >
+        {children}
+      </ol>
+    );
+  },
+  li({ children }) {
+    return <li style={{ marginBottom: "8px" }}>{children}</li>;
+  },
+  blockquote({ children }) {
+    return (
+      <blockquote
+        style={{
+          borderLeft: "4px solid var(--accent)",
+          paddingLeft: "16px",
+          marginLeft: 0,
+          marginBottom: "16px",
+          color: "var(--text-secondary)",
+          fontStyle: "italic",
+        }}
+      >
+        {children}
+      </blockquote>
+    );
+  },
+  table({ children }) {
+    return (
+      <div style={{ overflowX: "auto", marginBottom: "16px" }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            border: "1px solid var(--border)",
+          }}
+        >
+          {children}
+        </table>
+      </div>
+    );
+  },
+  thead({ children }) {
+    return (
+      <thead
+        style={{
+          background: "var(--bg-hover)",
+          borderBottom: "2px solid var(--border)",
+        }}
+      >
+        {children}
+      </thead>
+    );
+  },
+  tbody({ children }) {
+    return <tbody>{children}</tbody>;
+  },
+  tr({ children }) {
+    return (
+      <tr style={{ borderBottom: "1px solid var(--border-light)" }}>
+        {children}
+      </tr>
+    );
+  },
+  th({ children }) {
+    return (
+      <th
+        style={{
+          padding: "12px",
+          textAlign: "left",
+          fontWeight: 600,
+          color: "var(--text-primary)",
+        }}
+      >
+        {children}
+      </th>
+    );
+  },
+  td({ children }) {
+    return (
+      <td
+        style={{
+          padding: "12px",
+          color: "var(--text-primary)",
+        }}
+      >
+        {children}
+      </td>
+    );
+  },
+  a: null, // overridden inside Reader with navigate access
+  img({ src, alt }) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        style={{
+          maxWidth: "100%",
+          height: "auto",
+          marginBottom: "16px",
+          border: "1px solid var(--border)",
+        }}
+      />
+    );
+  },
+};
+
+function extractText(children) {
+  if (typeof children === "string") return children;
+  if (Array.isArray(children)) {
+    return children.map(extractText).join("");
+  }
+  if (children?.props?.children) {
+    return extractText(children.props.children);
+  }
+  return "";
+}
 
 function buildToc(markdown) {
-  const items = []
-  const lines = markdown.split('\n')
+  const items = [];
+  const lines = markdown.split("\n");
   lines.forEach((line) => {
-    const h2 = line.match(/^## (.+)/)
-    const h3 = line.match(/^### (.+)/)
+    const h2 = line.match(/^## (.+)/);
+    const h3 = line.match(/^### (.+)/);
     if (h2) {
-      const text = h2[1]
-      items.push({ level: 2, text, id: slugify(text) })
+      const text = h2[1];
+      items.push({ level: 2, text, id: slugify(text) });
     } else if (h3) {
-      const text = h3[1]
-      items.push({ level: 3, text, id: slugify(text) })
+      const text = h3[1];
+      items.push({ level: 3, text, id: slugify(text) });
     }
-  })
-  return items
+  });
+  return items;
 }
 
 function slugify(str) {
-  return str.toLowerCase().replace(/[^가-힣a-z0-9]+/gi, '-').replace(/^-|-$/g, '')
+  return str
+    .toLowerCase()
+    .replace(/[^가-힣a-z0-9]+/gi, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function TableOfContents({ items, activeId }) {
+  if (items.length === 0) return null;
+
+  const handleClick = (e, id) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <aside
+      style={{
+        width: "100%",
+        position: "sticky",
+        top: 76,
+        maxHeight: "calc(100vh - 100px)",
+        overflowY: "auto",
+        paddingTop: 32,
+        alignSelf: "flex-start",
+      }}
+    >
+      <p
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--text-muted)",
+          marginBottom: 10,
+          paddingLeft: 12,
+        }}
+      >
+        목차
+      </p>
+      <nav>
+        {items.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className={[
+              tocStyle.item,
+              item.level === 3 ? tocStyle.itemH3 : "",
+              activeId === item.id ? tocStyle.itemActive : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            onClick={(e) => handleClick(e, item.id)}
+          >
+            {item.text}
+          </a>
+        ))}
+      </nav>
+    </aside>
+  );
 }
 
 export default function Reader() {
-  const { slug } = useParams()
-  const navigate = useNavigate()
-  const [activeId, setActiveId] = useState('')
-  const contentRef = useRef(null)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [activeId, setActiveId] = useState("");
+  const [tocVisible, setTocVisible] = useState(false);
+  const contentRef = useRef(null);
 
-  const article = useMemo(() => ARTICLES.find((a) => a.slug === slug), [slug])
-  const html = useMemo(() => (article ? marked.parse(article.content) : ''), [article])
-  const toc = useMemo(() => (article ? buildToc(article.content) : []), [article])
+  const handleTocToggle = useCallback(() => {
+    setTocVisible((v) => !v);
+  }, []);
 
-  // ID를 헤딩에 붙이고 IntersectionObserver로 활성 섹션 추적
+  const article = useMemo(
+    () => ARTICLES.find((a) => a.id === Number(id)),
+    [id],
+  );
+
+  const components = useMemo(
+    () => ({
+      ...markdownComponents,
+      a({ href, children }) {
+        if (
+          href &&
+          !href.startsWith("http") &&
+          !href.startsWith("/") &&
+          href.endsWith(".md")
+        ) {
+          const slug = decodeURIComponent(
+            href.replace(/^.*\//, "").replace(".md", ""),
+          );
+          const target = ARTICLES.find((a) => a.slug === slug);
+          if (target) {
+            return (
+              <a
+                href={`/articles/${target.id}`}
+                style={{
+                  color: "var(--accent)",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/articles/${target.id}`);
+                }}
+              >
+                {children}
+              </a>
+            );
+          }
+        }
+        return (
+          <a
+            href={href}
+            style={{
+              color: "var(--accent)",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {children}
+          </a>
+        );
+      },
+    }),
+    [navigate],
+  );
+  const toc = useMemo(
+    () => (article ? buildToc(article.content) : []),
+    [article],
+  );
+
+  // IntersectionObserver로 활성 섹션 추적
   useEffect(() => {
-    if (!contentRef.current) return
-    const headings = contentRef.current.querySelectorAll('h2, h3')
-    headings.forEach((h) => {
-      h.id = slugify(h.textContent)
-    })
+    if (!contentRef.current) return;
+    const headings = contentRef.current.querySelectorAll("h2, h3");
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) setActiveId(e.target.id)
-        })
+          if (e.isIntersecting) setActiveId(e.target.id);
+        });
       },
-      { rootMargin: '-15% 0px -60% 0px' }
-    )
+      { rootMargin: "-15% 0px -60% 0px" },
+    );
 
-    headings.forEach((h) => observer.observe(h))
-    return () => observer.disconnect()
-  }, [html])
+    headings.forEach((h) => observer.observe(h));
+    return () => observer.disconnect();
+  }, [article]);
 
   if (!article) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-[var(--text-muted)] mb-4">아티클을 찾을 수 없습니다.</p>
+          <p className="text-(--text-muted) mb-4">아티클을 찾을 수 없습니다.</p>
           <button
-            className="text-[var(--accent)] text-sm underline"
-            onClick={() => navigate('/articles')}
+            className="text-(--accent) text-sm underline"
+            onClick={() => navigate("/articles")}
           >
             목록으로 돌아가기
           </button>
         </div>
       </div>
-    )
+    );
   }
 
-  const cat = CATEGORIES[article.category]
+  const cat = CATEGORIES[article.category];
 
   return (
-    <div>
-      <div
-        className="max-w-[1100px] mx-auto px-4 py-8 gap-10"
-        style={{ display: 'grid', gridTemplateColumns: '1fr 220px', alignItems: 'start' }}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "220px 1fr 220px",
+        gap: "0 40px",
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "0 32px",
+        boxSizing: "border-box",
+        alignItems: "start",
+        width: "100%",
+      }}
+    >
+      {/* Left spacer — mirrors TOC column to true-center the article */}
+      <div />
+
+      {/* Main article */}
+      <article
+        className="px-4 py-8"
+        style={{ minWidth: 0 }}
       >
-        {/* Main content */}
-        <article className="min-w-0">
-          {/* Back */}
-          <button
-            className="flex items-center gap-2 text-[13px] font-mono mb-8 transition-colors"
-            style={{ color: 'var(--text-secondary)' }}
-            onClick={() => navigate('/articles')}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-secondary)')}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            아티클 목록
-          </button>
+        <div className="mb-5">
+          <Tag category={article.category} active />
+        </div>
 
-          <div className="mb-5">
-            <Tag category={article.category} active />
-          </div>
+        <h1
+          className="font-bold leading-[1.15] mb-4"
+          style={{
+            fontSize: "clamp(26px, 4vw, 42px)",
+            color: "var(--text-primary)",
+            fontFamily: "'DM Serif Display', bold",
+          }}
+        >
+          {article.title}
+        </h1>
 
-          <h1
-            className="font-serif leading-[1.15] mb-4"
-            style={{ fontSize: 'clamp(26px, 4vw, 42px)', color: 'var(--text-primary)' }}
-          >
-            {article.title}
-          </h1>
+        <div
+          className="text-[12px] font-bold mb-10 pb-7 border-b"
+          style={{
+            color: "var(--text-muted)",
+            borderColor: "var(--border-light)",
+          }}
+        >
+          {article.date} · {article.readTime} 읽기
+        </div>
 
-          <div
-            className="text-[12px] font-mono mb-10 pb-7 border-b"
-            style={{ color: 'var(--text-muted)', borderColor: 'var(--border-light)' }}
-          >
-            {article.date} · {article.readTime} 읽기
-          </div>
+        {/* Markdown body */}
+        <div ref={contentRef} className="markdown-body">
+          <ReactMarkdown components={components} rehypePlugins={[rehypeRaw]}>
+            {article.content}
+          </ReactMarkdown>
+        </div>
+      </article>
 
-          {/* Markdown body */}
-          <div
-            ref={contentRef}
-            className="markdown-body"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        </article>
-
-        {/* TOC sidebar */}
-        <aside style={{ position: 'sticky', top: '80px' }}>
-          <div
-            className="text-[10px] font-mono tracking-[0.12em] uppercase mb-3.5"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            목차
-          </div>
-          {toc.map((item) => {
-            const isActive = activeId === item.id
-            return (
-              <div
-                key={item.id}
-                className={[
-                  tocStyle.item,
-                  item.level === 3 ? tocStyle.itemH3 : '',
-                  isActive ? tocStyle.itemActive : '',
-                ].join(' ')}
-                onClick={() => {
-                  const el = document.getElementById(item.id)
-                  el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-              >
-                {item.text}
-              </div>
-            )
-          })}
-        </aside>
-      </div>
+      {/* Right TOC */}
+      <TableOfContents items={toc} activeId={activeId} />
     </div>
-  )
+  );
 }
