@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.logo-gradient-hover {
+  background: linear-gradient(90deg, #7c3aed, #3b82f6, #7c3aed);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 2s linear infinite;
+}
+
 @layer base {
   :root {
     --bg-surface: #ffffff;
