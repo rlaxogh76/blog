@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ARTICLES } from "../content/articles";
 import { CATEGORIES } from "../content/categories";
 
 const PROFILE = {
   name: "rlaxogh76",
-  specialty: "세상에 1%라도 기여할 수 있도록.",
+  specialty: "양보다 질 좋은 글을 작성하기 위해 노력하는 개발자.",
   avatar: "https://avatars.githubusercontent.com/u/108007761?v=4",
   github: "https://github.com/rlaxogh76",
 };
@@ -51,6 +51,8 @@ function Card({ children, style }) {
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const activeTag = searchParams.get("tag") || "";
   const [showAllCats, setShowAllCats] = useState(false);
 
   const categoryCounts = useMemo(() => {
@@ -206,29 +208,38 @@ export default function Sidebar() {
         <Card>
           <SectionTitle>태그</SectionTitle>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {allTags.map((tag) => (
-              <span
-                key={tag}
-                onClick={() => navigate(`/?tag=${tag}`)}
-                style={{
-                  fontSize: 11,
-                  padding: "3px 8px",
-                  borderRadius: 4,
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.borderColor = "var(--accent)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.borderColor = "var(--border)")
-                }
-              >
-                {tag}
-              </span>
-            ))}
+            {allTags.map((tag) => {
+              const isActive = activeTag === tag;
+              return (
+                <span
+                  key={tag}
+                  onClick={() => navigate(isActive ? "/" : `/?tag=${tag}`)}
+                  style={{
+                    fontSize: 11,
+                    padding: "3px 8px",
+                    borderRadius: 4,
+                    background: isActive
+                      ? "rgba(200,169,110,0.12)"
+                      : "var(--bg-card)",
+                    border: `1px solid ${isActive ? "var(--accent)" : "var(--border)"}`,
+                    color: isActive ? "var(--accent)" : "var(--text-secondary)",
+                    cursor: "pointer",
+                    fontWeight: isActive ? 600 : 400,
+                    transition: "all 0.15s",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive)
+                      e.currentTarget.style.borderColor = "var(--accent)";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive)
+                      e.currentTarget.style.borderColor = "var(--border)";
+                  }}
+                >
+                  {tag}
+                </span>
+              );
+            })}
           </div>
         </Card>
       )}
