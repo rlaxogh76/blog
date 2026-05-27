@@ -270,8 +270,12 @@ export default function Header() {
               letterSpacing: "5px",
               transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => e.currentTarget.classList.add("logo-gradient-hover")}
-            onMouseLeave={(e) => e.currentTarget.classList.remove("logo-gradient-hover")}
+            onMouseEnter={(e) =>
+              e.currentTarget.classList.add("logo-gradient-hover")
+            }
+            onMouseLeave={(e) =>
+              e.currentTarget.classList.remove("logo-gradient-hover")
+            }
           >
             rlaxogh76
           </NavLink>
