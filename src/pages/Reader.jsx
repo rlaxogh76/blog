@@ -73,7 +73,7 @@ const markdownComponents = {
           paddingBottom: "8px",
         }}
       >
-        {children}
+        <span data-heading-text>{children}</span>
       </h2>
     );
   },
@@ -91,7 +91,7 @@ const markdownComponents = {
           color: "var(--text-primary)",
         }}
       >
-        {children}
+        <span data-heading-text>{children}</span>
       </h3>
     );
   },
@@ -276,7 +276,20 @@ function TableOfContents({ items, activeId }) {
   const handleClick = (e, id) => {
     e.preventDefault();
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!el) return;
+    const headerHeight = document.querySelector("header")?.offsetHeight ?? 56;
+    const top =
+      el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+    window.scrollTo({ top, behavior: "smooth" });
+
+    const spanEl = el.querySelector("[data-heading-text]") ?? el;
+    spanEl.style.animation = "none";
+    void spanEl.offsetWidth;
+    spanEl.style.animation = "heading-highlight 1.1s ease-out forwards";
+
+    setTimeout(() => {
+      spanEl.style.animation = "";
+    }, 1000);
   };
 
   return (
@@ -452,10 +465,7 @@ export default function Reader() {
       <div />
 
       {/* Main article */}
-      <article
-        className="px-4 py-8"
-        style={{ minWidth: 0 }}
-      >
+      <article className="px-4 py-8" style={{ minWidth: 0 }}>
         <div className="mb-5">
           <Tag category={article.category} active />
         </div>
