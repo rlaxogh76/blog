@@ -221,16 +221,30 @@ const markdownComponents = {
   a: null, // overridden inside Reader with navigate access
   img({ src, alt }) {
     return (
-      <img
-        src={src}
-        alt={alt}
-        style={{
-          maxWidth: "100%",
-          height: "auto",
-          marginBottom: "16px",
-          border: "1px solid var(--border)",
-        }}
-      />
+      <figure style={{ margin: 0, marginBottom: "16px" }}>
+        <img
+          src={src}
+          alt={alt}
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            border: "1px solid var(--border)",
+            display: "block",
+          }}
+        />
+        {alt && (
+          <figcaption
+            style={{
+              textAlign: "center",
+              fontSize: "0.78em",
+              color: "var(--text-muted, #888)",
+              marginTop: "6px",
+            }}
+          >
+            {alt}
+          </figcaption>
+        )}
+      </figure>
     );
   },
 };
