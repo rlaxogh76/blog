@@ -11,11 +11,11 @@ import Tag from "../components/Tag";
 
 // 커스텀 마크다운 컴포넌트
 const markdownComponents = {
-  code({ node, inline, className, children, ...props }) {
+  code({ node, className, children, ...props }) {
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : "text";
 
-    if (inline) {
+    if (!match) {
       return (
         <code
           style={{
@@ -148,7 +148,6 @@ const markdownComponents = {
           marginLeft: 0,
           marginBottom: "16px",
           color: "var(--text-secondary)",
-          fontStyle: "italic",
         }}
       >
         {children}
