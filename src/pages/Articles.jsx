@@ -8,13 +8,13 @@ export default function Articles() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState(searchParams.get("category") || "all");
-  const [activeTag, setActiveTag] = useState(searchParams.get("tag") || "");
+  const [activeTags, setActiveTags] = useState(searchParams.getAll("tag"));
 
   useEffect(() => {
     const cat = searchParams.get("category");
-    const tag = searchParams.get("tag");
+    const tags = searchParams.getAll("tag");
     setFilter(cat || "all");
-    setActiveTag(tag || "");
+    setActiveTags(tags);
   }, [searchParams]);
 
   const handleFilter = (key) => {
@@ -24,13 +24,20 @@ export default function Articles() {
     else setSearchParams({ category: key });
   };
 
-  const clearTag = () => {
-    setActiveTag("");
-    setSearchParams({});
+  const clearTag = (tag) => {
+    const next = activeTags.filter((t) => t !== tag);
+    if (next.length === 0) {
+      setSearchParams({});
+    } else {
+      const params = new URLSearchParams();
+      next.forEach((t) => params.append("tag", t));
+      setSearchParams(params);
+    }
   };
 
   const filtered = ARTICLES.filter((a) => {
-    if (activeTag) return (a.tags || []).includes(activeTag);
+    if (activeTags.length > 0)
+      return activeTags.every((t) => (a.tags || []).includes(t));
     if (filter !== "all") return a.category === filter;
     return true;
   });
@@ -71,38 +78,41 @@ export default function Articles() {
           ))}
         </div>
 
-        {/* Active tag badge */}
-        {activeTag && (
-          <div className="flex items-center gap-2 mb-5">
+        {/* Active tag badges */}
+        {activeTags.length > 0 && (
+          <div className="flex items-center gap-2 mb-5 flex-wrap">
             <span
               className="text-[12px] font-bold"
               style={{ color: "var(--text-muted)" }}
             >
               태그:
             </span>
-            <span
-              className="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded"
-              style={{
-                background: "rgba(200,169,110,0.12)",
-                border: "1px solid var(--accent)",
-                color: "var(--accent)",
-              }}
-            >
-              #{activeTag}
-              <button
-                onClick={clearTag}
+            {activeTags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded"
                 style={{
-                  lineHeight: 1,
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
+                  background: "rgba(200,169,110,0.12)",
+                  border: "1px solid var(--accent)",
                   color: "var(--accent)",
-                  padding: 0,
                 }}
               >
-                ×
-              </button>
-            </span>
+                #{tag}
+                <button
+                  onClick={() => clearTag(tag)}
+                  style={{
+                    lineHeight: 1,
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "var(--accent)",
+                    padding: 0,
+                  }}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
             <span
               className="text-[12px]"
               style={{ color: "var(--text-muted)" }}
