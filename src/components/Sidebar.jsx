@@ -52,7 +52,7 @@ function Card({ children, style }) {
 export default function Sidebar() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const activeTag = searchParams.get("tag") || "";
+  const activeTags = new Set(searchParams.getAll("tag"));
   const [showAllCats, setShowAllCats] = useState(false);
 
   const categoryCounts = useMemo(() => {
@@ -209,11 +209,22 @@ export default function Sidebar() {
           <SectionTitle>태그</SectionTitle>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {allTags.map((tag) => {
-              const isActive = activeTag === tag;
+              const isActive = activeTags.has(tag);
               return (
                 <span
                   key={tag}
-                  onClick={() => navigate(isActive ? "/" : `/?tag=${tag}`)}
+                  onClick={() => {
+                    const next = new Set(activeTags);
+                    if (isActive) next.delete(tag);
+                    else next.add(tag);
+                    if (next.size === 0) {
+                      navigate("/");
+                    } else {
+                      const params = new URLSearchParams();
+                      next.forEach((t) => params.append("tag", t));
+                      navigate(`/?${params.toString()}`);
+                    }
+                  }}
                   style={{
                     fontSize: 11,
                     padding: "3px 8px",
