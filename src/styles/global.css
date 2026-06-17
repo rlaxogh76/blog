@@ -1,16 +1,30 @@
 @import "tailwindcss";
 
 @keyframes heading-highlight {
-  0%   { background-color: transparent; }
-  8%   { background-color: #ffe066cc; }
-  40%  { background-color: #ffe066cc; }
-  100% { background-color: transparent; }
+  0% {
+    background-color: transparent;
+  }
+  8% {
+    background-color: #ffe066cc;
+  }
+  40% {
+    background-color: #ffe066cc;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .logo-gradient-hover {

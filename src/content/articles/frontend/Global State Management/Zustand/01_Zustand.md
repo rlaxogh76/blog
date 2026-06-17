@@ -1,39 +1,39 @@
 ---
-title: Zustand 파헤쳐보기 #1
+title: Zustand란 #1
 category: frontend
 date: 2025.03.14
 readTime: 8분
 desc: Zustand의 개념과 등장 배경, 주요 특징까지 한눈에 알아보기
-tags: zustand, react, 파헤쳐보기
+tags: zustand, React, 파헤쳐보기
 ---
 
 <img src="https://www.heropy.dev/postAssets/n74Tgc/main.jpg" alt="출처 : heropy.dev 블로그" />
 
 ## Zustand란?
 
-독일어로 "**상태**"를 뜻하며, 리액트 애플리케이션의 **전역 상태를 관리**할 수 있게 해주는 **라이브러리**입니다.
+독일어로 "**상태**"를 뜻하며, 리액트 애플리케이션의 **전역 상태를 관리**할 수 있게 해주는 **라이브러리**다.
 
 ## 왜 사용해야 하는가?
 
-리액트에서는 기본적으로 부모 컴포넌트가 자식 컴포넌트에게 props를 통해 데이터를 전달합니다.
+리액트에서는 기본적으로 부모 컴포넌트가 자식 컴포넌트에게 props를 통해 데이터를 전달해야 한다.
 
-예를 들어 A(부모)에서 D(자식)로 데이터를 전달하려면, 사이에 있는 B와 C를 모두 거쳐야 합니다.
+예를 들어 A(부모)에서 D(자식)로 데이터를 전달하려면, 사이에 있는 B와 C를 모두 거쳐야 한다.
 
 <img src="https://velog.velcdn.com/images/skwon/post/a025fdd1-3945-439c-92c4-ad43887907a8/image.png" alt="출처 : ian kwon 블로그">
 
-컴포넌트 계층이 깊어질수록 이러한 **props drilling** 문제가 심화됩니다.
+컴포넌트 계층이 깊어질수록 이러한 **props drilling** 문제가 심화된다.
 
-Zustand 같은 상태 관리 라이브러리를 사용하면, 상태를 **중앙 한 곳에 모아** 필요한 컴포넌트가 직접 꺼내 쓸 수 있어 props drilling을 근본적으로 해결할 수 있습니다.
+Zustand 같은 상태 관리 라이브러리를 사용하면, 상태를 **중앙 한 곳에 모아** 필요한 컴포넌트가 직접 꺼내 쓸 수 있어 props drilling을 근본적으로 해결할 수 있다.
 
 ## 주로 언제 사용할까?
 
-Zustand가 특히 유용한 상황은 다음과 같습니다.
+Zustand가 특히 유용한 상황은 다음과 같다.
 
 - 여러 컴포넌트에서 **동일한 상태**를 공유해야 할 때
 - **사용자 인증 상태**, **다크모드 설정** 등 앱 전역에서 접근해야 하는 값이 있을 때
 - props drilling이 불가피하게 깊어지고 있을 때
 
-단순히 하나의 컴포넌트 안에서만 쓰이는 상태라면 useState로도 충분합니다.
+단순히 하나의 컴포넌트 안에서만 쓰이는 상태라면 useState로도 충분하다.
 
 ## Zustand의 특징
 

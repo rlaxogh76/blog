@@ -262,20 +262,13 @@ export default function Header() {
         <div className="w-full max-w-335 mx-auto px-6 h-full flex items-center justify-between">
           <NavLink
             to="/"
-            className="text-[15px] font-bold"
+            className="text-[20px] font-bold"
             style={{
               color: "var(--text-primary)",
-              fontWeight: 400,
-              fontFamily: "'Monoton', sans-serif",
+              fontWeight: 600,
+              fontFamily: "'Alien Block', sans-serif",
               letterSpacing: "5px",
-              transition: "color 0.2s",
             }}
-            onMouseEnter={(e) =>
-              e.currentTarget.classList.add("logo-gradient-hover")
-            }
-            onMouseLeave={(e) =>
-              e.currentTarget.classList.remove("logo-gradient-hover")
-            }
           >
             rlaxogh76
           </NavLink>
