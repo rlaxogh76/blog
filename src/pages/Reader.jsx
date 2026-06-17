@@ -143,9 +143,11 @@ const markdownComponents = {
     return (
       <blockquote
         style={{
-          borderLeft: "4px solid var(--accent)",
+          borderLeft: "6px solid var(--accent)",
           paddingLeft: "16px",
-          marginLeft: 0,
+          paddingTop: "0px",
+          paddingBottom: "0px",
+          marginLeft: "-6px",
           marginBottom: "16px",
           color: "var(--text-secondary)",
         }}
@@ -162,6 +164,8 @@ const markdownComponents = {
             width: "100%",
             borderCollapse: "collapse",
             border: "1px solid var(--border)",
+            fontSize: "14px",
+            tableLayout: "fixed",
           }}
         >
           {children}
@@ -195,10 +199,15 @@ const markdownComponents = {
     return (
       <th
         style={{
-          padding: "12px",
+          padding: "14px 16px",
           textAlign: "left",
           fontWeight: 600,
           color: "var(--text-primary)",
+          lineHeight: "1.5",
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
+          minWidth: "120px",
+          whiteSpace: "normal",
         }}
       >
         {children}
@@ -209,8 +218,13 @@ const markdownComponents = {
     return (
       <td
         style={{
-          padding: "12px",
+          padding: "14px 16px",
           color: "var(--text-primary)",
+          lineHeight: "1.5",
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
+          minWidth: "120px",
+          whiteSpace: "normal",
         }}
       >
         {children}

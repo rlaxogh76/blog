@@ -12,6 +12,17 @@ const PROFILE = {
 
 const CAT_LIMIT = 4;
 
+const TAG_COLORS = [
+  { bg: "rgba(198, 151, 255, 0.12)", border: "#c697ff", text: "#c697ff" },
+  { bg: "rgba(59, 130, 246, 0.12)", border: "#3b82f6", text: "#3b82f6" },
+  { bg: "rgba(34, 197, 94, 0.12)", border: "#22c55e", text: "#22c55e" },
+  { bg: "rgba(248, 113, 113, 0.12)", border: "#f87171", text: "#f87171" },
+  { bg: "rgba(251, 191, 36, 0.12)", border: "#fbbf24", text: "#fbbf24" },
+  { bg: "rgba(236, 72, 153, 0.12)", border: "#ec4899", text: "#ec4899" },
+  { bg: "rgba(99, 102, 241, 0.12)", border: "#6366f1", text: "#6366f1" },
+  { bg: "rgba(14, 165, 233, 0.12)", border: "#0ea5e9", text: "#0ea5e9" },
+];
+
 function SectionTitle({ children }) {
   return (
     <div
@@ -63,10 +74,19 @@ export default function Sidebar() {
     return counts;
   }, []);
 
-  const allTags = useMemo(() => {
+  const { allTags, tagCounts } = useMemo(() => {
+    const tagCounts = {};
     const tagSet = new Set();
-    ARTICLES.forEach((a) => (a.tags || []).forEach((t) => tagSet.add(t)));
-    return [...tagSet].sort();
+    ARTICLES.forEach((a) => {
+      (a.tags || []).forEach((t) => {
+        tagSet.add(t);
+        tagCounts[t] = (tagCounts[t] || 0) + 1;
+      });
+    });
+    return {
+      allTags: [...tagSet].sort(),
+      tagCounts,
+    };
   }, []);
 
   const catEntries = Object.entries(CATEGORIES).filter(
@@ -206,10 +226,41 @@ export default function Sidebar() {
       {/* Tags */}
       {allTags.length > 0 && (
         <Card>
-          <SectionTitle>태그</SectionTitle>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {allTags.map((tag) => {
+          <div
+            className="flex items-center justify-between gap-2 text-[13px] font-semibold mb-3"
+            style={{ color: "var(--text-primary)" }}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                style={{
+                  width: 3,
+                  height: 14,
+                  background: "var(--accent)",
+                  borderRadius: 2,
+                  flexShrink: 0,
+                }}
+              />
+              태그
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#fff",
+                background: "var(--accent)",
+                borderRadius: 999,
+                padding: "1px 7px",
+                minWidth: 20,
+                textAlign: "center",
+              }}
+            >
+              {allTags.length}
+            </span>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingLeft: 11 }}>
+            {allTags.map((tag, idx) => {
               const isActive = activeTags.has(tag);
+              const colorSet = TAG_COLORS[idx % TAG_COLORS.length];
               return (
                 <span
                   key={tag}
@@ -229,25 +280,38 @@ export default function Sidebar() {
                     fontSize: 11,
                     padding: "3px 8px",
                     borderRadius: 4,
-                    background: isActive
-                      ? "rgba(200,169,110,0.12)"
-                      : "var(--bg-card)",
-                    border: `1px solid ${isActive ? "var(--accent)" : "var(--border)"}`,
-                    color: isActive ? "var(--accent)" : "var(--text-secondary)",
+                    background: isActive ? colorSet.bg : "var(--bg-card)",
+                    border: `1px solid ${isActive ? colorSet.border : "var(--border)"}`,
+                    color: isActive ? colorSet.text : "var(--text-secondary)",
                     cursor: "pointer",
                     fontWeight: isActive ? 600 : 400,
                     transition: "all 0.15s",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive)
-                      e.currentTarget.style.borderColor = "var(--accent)";
+                    if (!isActive) {
+                      e.currentTarget.style.borderColor = colorSet.border;
+                      e.currentTarget.style.color = colorSet.text;
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive)
+                    if (!isActive) {
                       e.currentTarget.style.borderColor = "var(--border)";
+                      e.currentTarget.style.color = "var(--text-secondary)";
+                    }
                   }}
                 >
-                  {tag}
+                  <span>{tag}</span>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      opacity: 0.7,
+                    }}
+                  >
+                    {tagCounts[tag]}
+                  </span>
                 </span>
               );
             })}

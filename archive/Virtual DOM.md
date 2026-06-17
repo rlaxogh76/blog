@@ -1,3 +1,12 @@
+---
+title: Virtual DOM은 무엇인가
+category: frontend
+date: 2025.06.11
+readTime: 8분
+desc: Virtual DOM 개념과 등장 배경, 주요 특징까지 한눈에 알아보기
+tags: Virtual DOM, React, 파헤쳐보기, Core
+---
+
 React에서 UI 업데이트의 효율성을 극대화하기 위해 실제 DOM의 가벼운 복사본을 메모리 상에서 관리하는 기술.
 
 DOM 조작이 느린 브라우저 환경에서 성능을 개선하는 데 필요하다.
@@ -5,8 +14,6 @@ DOM 조작이 느린 브라우저 환경에서 성능을 개선하는 데 필요
 ## 왜 등장하였나?
 
 Virtual DOM이 등장하기 전, 브라우저의 렌더링 과정은 다음과 같았다.
-
-![alt text](<Pasted image 20260611090553.png>)
 
 - **1. DOM & CSSOM 트리 생성**
 
