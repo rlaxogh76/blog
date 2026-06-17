@@ -84,7 +84,7 @@ const markdownComponents = {
           style={oneLight}
           customStyle={{
             background: "#fff",
-            border: "1px solid var(--border)",
+            border: "1px solid var(--md-border)",
             borderRadius: "8px",
             padding: "16px",
             marginBottom: 0,
@@ -209,7 +209,7 @@ const markdownComponents = {
           style={{
             width: "100%",
             borderCollapse: "collapse",
-            border: "1px solid var(--border)",
+            border: "1px solid var(--md-border)",
             fontSize: "14px",
             tableLayout: "fixed",
           }}
@@ -224,7 +224,7 @@ const markdownComponents = {
       <thead
         style={{
           background: "var(--bg-hover)",
-          borderBottom: "2px solid var(--border)",
+          borderBottom: "2px solid var(--md-border)",
         }}
       >
         {children}
