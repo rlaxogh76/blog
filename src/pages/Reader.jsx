@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Copy, Check } from "lucide-react";
 import { ARTICLES } from "../content/articles";
 import { CATEGORIES } from "../content/categories";
 import { toc as tocStyle } from "../styles/components";
@@ -21,7 +22,7 @@ const markdownComponents = {
           style={{
             padding: "2px 6px",
             borderRadius: "4px",
-            background: "var(--bg-hover)",
+            background: "#f5f5f5",
             color: "var(--accent)",
             fontFamily: "'Source Code Pro', monospace",
             fontSize: "0.9em",
@@ -33,25 +34,70 @@ const markdownComponents = {
       );
     }
 
+    const code = String(children).replace(/\n$/, "");
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+      navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    };
+
     return (
-      <SyntaxHighlighter
-        language={language}
-        style={oneLight}
-        customStyle={{
-          background: "#EDEDED",
-          border: "1px solid var(--border)",
-          borderRadius: "8px",
-          padding: "16px",
-          marginBottom: "16px",
-          fontSize: "13px",
-          lineHeight: "1.5",
+      <div
+        style={{ position: "relative", marginBottom: "16px", group: "code" }}
+        onMouseEnter={(e) => {
+          const btn = e.currentTarget.querySelector("button");
+          if (btn) btn.style.opacity = "1";
         }}
-        codeTagProps={{ style: { background: "#EDEDED" } }}
-        wrapLongLines
-        {...props}
+        onMouseLeave={(e) => {
+          const btn = e.currentTarget.querySelector("button");
+          if (btn) btn.style.opacity = "0";
+        }}
       >
-        {String(children).replace(/\n$/, "")}
-      </SyntaxHighlighter>
+        <button
+          onClick={handleCopy}
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            padding: "4px",
+            border: "none",
+            background: "transparent",
+            color: "var(--text-secondary)",
+            cursor: "pointer",
+            opacity: "0",
+            transition: "all 0.2s",
+            zIndex: 10,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {copied ? (
+            <Check size={18} color="var(--accent)" />
+          ) : (
+            <Copy size={18} />
+          )}
+        </button>
+        <SyntaxHighlighter
+          language={language}
+          style={oneLight}
+          customStyle={{
+            background: "#fff",
+            border: "1px solid var(--border)",
+            borderRadius: "8px",
+            padding: "16px",
+            marginBottom: 0,
+            fontSize: "13px",
+            lineHeight: "1.5",
+          }}
+          codeTagProps={{ style: { background: "transparent" } }}
+          wrapLongLines
+          {...props}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
     );
   },
   pre({ children }) {
