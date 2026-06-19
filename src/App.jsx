@@ -71,7 +71,7 @@ function Layout() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/blog">
       <Header />
       <Layout />
     </BrowserRouter>
